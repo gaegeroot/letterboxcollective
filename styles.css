@@ -646,6 +646,8 @@ section {
   gap: 12px;
   color: var(--muted);
   font-size: 0.9rem;
+  padding: 20px;
+  text-align: center;
 }
 .map-placeholder svg {
   color: var(--primary);
