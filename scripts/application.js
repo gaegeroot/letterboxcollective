@@ -46,6 +46,7 @@ document
             pitch_answer: fd.get("pitch_answer"),
             additional_info: fd.get("additional_info") || "",
             preferred_contact: fd.get("preferred_contact") || "",
+            sms_consent: fd.get("sms_consent") === "yes",
             submitted_at: new Date().toISOString(),
         };
 
@@ -68,8 +69,8 @@ document
 
         document.getElementById("form-content").style.display = "none";
         document.getElementById("success-state").style.display = "block";
-        window.scrollTo({ top: 0, behavior: "smooth" });
     });
+
 // Phone auto-formatter
 document.getElementById("phone").addEventListener("input", function (e) {
     var digits = e.target.value.replace(/\D/g, "").slice(0, 10);

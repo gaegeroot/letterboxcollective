@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rep Dashboard | Letterbox Collective</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --green: #16a34a;
+        --green-dark: #15803d;
+        --green-mid: #22c55e;
+        --amber: #d97706;
+        --red: #dc2626;
+        --bg: #0f172a;
+        --bg-card: #1e293b;
+        --bg-input: #0f172a;
+        --border: #334155;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --text-label: #cbd5e1;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        padding: 0 2rem;
+      }
+      .header-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .logo {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--text);
+        text-decoration: none;
+        letter-spacing: -0.02em;
+      }
+      .logo span {
+        color: var(--green-mid);
+      }
+      .rep-pill {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px 6px 6px;
+      }
+      .rep-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        color: var(--green-mid);
+      }
+      .rep-info-name {
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .rep-info-territory {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+
+      .dash {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 36px 2rem 60px;
+      }
+
+      .section-label {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--green-mid);
+        margin-bottom: 12px;
+      }
+
+      /* METRICS */
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+      .metric-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .metric-card.featured {
+        border-color: rgba(34, 197, 94, 0.3);
+        background: rgba(34, 197, 94, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+      .metric-card.featured::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--green), var(--green-mid));
+      }
+      .metric-label {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+      .metric-value {
+        font-size: 1.65rem;
+        font-weight: 900;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .metric-value.green {
+        color: var(--green-mid);
+      }
+      .metric-value.amber {
+        color: #f59e0b;
+      }
+      .metric-sub {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+      }
+      .metric-sub.good {
+        color: var(--green-mid);
+      }
+      .metric-sub.warn {
+        color: #f59e0b;
+      }
+
+      /* STATUS PILL */
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .status-pill.selling {
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.25);
+        color: var(--green-mid);
+      }
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--green-mid);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* TWO COL */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+      .three-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 22px;
+      }
+      .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+      .card-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text-label);
+      }
+      .card-meta {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+      }
+
+      /* PROGRESS */
+      .prog-row {
+        margin-bottom: 14px;
+      }
+      .prog-row:last-child {
+        margin-bottom: 0;
+      }
+      .prog-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 6px;
+      }
+      .prog-label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+      .prog-val {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .prog-bg {
+        height: 7px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+      .prog-fill {
+        height: 100%;
+        border-radius: 999px;
+      }
+      .prog-fill.green {
+        background: var(--green);
+      }
+      .prog-fill.amber {
+        background: #d97706;
+      }
+      .prog-fill.full {
+        background: var(--green-mid);
+      }
+
+      .bonus-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(34, 197, 94, 0.07);
+        border: 1px solid rgba(34, 197, 94, 0.18);
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-top: 14px;
+      }
+      .bonus-label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+      .bonus-val {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--green-mid);
+      }
+
+      /* SLOTS */
+      .slots-grid {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 5px;
+      }
+      .slot {
+        border-radius: 5px;
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.58rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        padding: 4px 2px;
+        text-align: center;
+        line-height: 1.3;
+      }
+      .slot.s-large {
+        grid-column: span 3;
+        height: 44px;
+      }
+      .slot.s-medium {
+        grid-column: span 2;
+        height: 36px;
+      }
+      .slot.s-small {
+        grid-column: span 1;
+        height: 30px;
+      }
+      .slot.sold {
+        background: rgba(22, 163, 74, 0.12);
+        border-color: rgba(22, 163, 74, 0.3);
+        color: #4ade80;
+      }
+      .slot.open {
+        border-style: dashed;
+        border-color: #334155;
+        color: #475569;
+      }
+
+      /* CHART */
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 90px;
+        margin-bottom: 12px;
+      }
+      .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        height: 100%;
+        justify-content: flex-end;
+      }
+      .bar-amt {
+        font-size: 0.62rem;
+        color: var(--text-muted);
+      }
+      .bar-body {
+        width: 100%;
+        border-radius: 4px 4px 0 0;
+        background: rgba(34, 197, 94, 0.2);
+      }
+      .bar-body.active {
+        background: var(--green);
+      }
+      .bar-mo {
+        font-size: 0.65rem;
+        color: var(--text-muted);
+      }
+
+      .hist-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .hist-row:last-child {
+        border-bottom: none;
+      }
+      .hist-month {
+        font-size: 0.82rem;
+        color: var(--text-label);
+      }
+      .hist-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .hist-badge {
+        font-size: 0.65rem;
+        font-weight: 600;
+        padding: 2px 7px;
+        border-radius: 4px;
+      }
+      .hist-badge.win {
+        background: rgba(22, 163, 74, 0.1);
+        color: var(--green-mid);
+      }
+      .hist-badge.miss {
+        background: rgba(148, 163, 184, 0.08);
+        color: var(--text-muted);
+      }
+      .hist-amt {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: var(--green-mid);
+      }
+      .hist-amt.muted {
+        color: var(--text-muted);
+      }
+      .all-time {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 12px;
+        margin-top: 4px;
+        border-top: 1px solid var(--border);
+      }
+      .all-time-label {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+      .all-time-val {
+        font-size: 1rem;
+        font-weight: 900;
+        color: var(--green-mid);
+      }
+
+      /* PIPELINE */
+      .pipeline-list {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .pipe-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+      .pipe-biz {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text);
+        flex: 1;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .pipe-size {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        padding: 2px 7px;
+        white-space: nowrap;
+      }
+      .tag {
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 4px;
+        white-space: nowrap;
+      }
+      .tag-sold {
+        background: rgba(22, 163, 74, 0.12);
+        color: var(--green-mid);
+      }
+      .tag-pitched {
+        background: rgba(245, 158, 11, 0.1);
+        color: #f59e0b;
+      }
+      .tag-reach {
+        background: rgba(59, 130, 246, 0.1);
+        color: #60a5fa;
+      }
+      .tag-pass {
+        background: rgba(148, 163, 184, 0.08);
+        color: var(--text-muted);
+      }
+
+      /* STREAK */
+      .streak-block {
+        text-align: center;
+        padding: 8px 0 4px;
+      }
+      .streak-num {
+        font-size: 2.8rem;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: var(--green-mid);
+        line-height: 1;
+      }
+      .streak-label {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .streak-dots {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        margin-top: 12px;
+      }
+      .streak-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(34, 197, 94, 0.2);
+      }
+      .streak-dot.on {
+        background: var(--green-mid);
+      }
+
+      /* PLAYBOOK */
+      .playbook-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .playbook-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        text-decoration: none;
+        transition:
+          border-color 0.2s,
+          background 0.2s;
+        cursor: pointer;
+      }
+      .playbook-item:hover {
+        border-color: rgba(34, 197, 94, 0.3);
+        background: rgba(34, 197, 94, 0.04);
+      }
+      .playbook-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        background: rgba(34, 197, 94, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: var(--green-mid);
+        flex-shrink: 0;
+      }
+      .playbook-title {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .playbook-sub {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 1px;
+      }
+      .playbook-arrow {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-left: auto;
+      }
+
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 24px 2rem;
+        margin-top: 20px;
+      }
+      .footer-inner {
+        max-width: 1100px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .footer-logo {
+        font-size: 1rem;
+        font-weight: 800;
+      }
+      .footer-logo span {
+        color: var(--green-mid);
+      }
+      .footer-copy {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+      }
+
+      @media (max-width: 768px) {
+        .metrics-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .two-col,
+        .three-col {
+          grid-template-columns: 1fr;
+        }
+        .slots-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+      @media (max-width: 480px) {
+        .metrics-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .header-inner {
+          gap: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header-inner">
+        <a href="https://letterboxcollective.com" class="logo"
+          ><span>Letterbox</span>Collective</a
+        >
+        <div class="rep-pill">
+          <div class="rep-avatar">JS</div>
+          <div>
+            <div class="rep-info-name">Jane Smith</div>
+            <div class="rep-info-territory">Territory &middot; 85710</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="dash">
+      <!-- THIS MONTH -->
+      <div class="section-label">February 2026</div>
+      <div class="metrics-grid">
+        <div class="metric-card featured">
+          <div class="metric-label">Earned so far</div>
+          <div class="metric-value green">$1,320</div>
+          <div class="metric-sub good">+ $300 if card fills</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Ads sold</div>
+          <div class="metric-value">
+            9
+            <span
+              style="
+                font-size: 1rem;
+                font-weight: 500;
+                color: var(--text-muted);
+              "
+              >/ 16</span
+            >
+          </div>
+          <div class="metric-sub">slots filled this month</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Days to deadline</div>
+          <div class="metric-value amber">8</div>
+          <div class="metric-sub warn">Closes the 22nd</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Card status</div>
+          <div style="margin-top: 8px">
+            <div class="status-pill selling">
+              <div class="status-dot"></div>
+              Selling
+            </div>
+          </div>
+          <div class="metric-sub" style="margin-top: 6px">Prints the 26th</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS + SLOTS -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Card progress</div>
+            <div class="card-meta">9 of 16 slots sold</div>
+          </div>
+
+          <div class="prog-row">
+            <div class="prog-top">
+              <span class="prog-label">Card filled</span>
+              <span class="prog-val">56%</span>
+            </div>
+            <div class="prog-bg">
+              <div class="prog-fill amber" style="width: 56%"></div>
+            </div>
+          </div>
+
+          <div class="prog-row">
+            <div class="prog-top">
+              <span class="prog-label">Territory minimum ($5,800)</span>
+              <span class="prog-val" style="color: var(--green-mid)"
+                >&#10003; Met</span
+              >
+            </div>
+            <div class="prog-bg">
+              <div class="prog-fill full" style="width: 100%"></div>
+            </div>
+          </div>
+
+          <div class="bonus-row">
+            <div>
+              <div class="bonus-label">Completion bonus</div>
+              <div
+                style="
+                  font-size: 0.72rem;
+                  color: var(--text-muted);
+                  margin-top: 2px;
+                "
+              >
+                Fill all 16 slots by the 22nd
+              </div>
+            </div>
+            <div class="bonus-val">$300</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Card layout</div>
+            <div class="card-meta">
+              Green = sold &nbsp;&#183;&nbsp; Dashed = open
+            </div>
+          </div>
+          <div class="slots-grid">
+            <div class="slot s-large sold">Showcase &mdash; SOLD</div>
+            <div class="slot s-large sold">Showcase &mdash; SOLD</div>
+            <div class="slot s-medium sold">Premium &mdash; SOLD</div>
+            <div class="slot s-medium sold">Premium &mdash; SOLD</div>
+            <div class="slot s-medium sold">Premium &mdash; SOLD</div>
+            <div class="slot s-medium sold">Premium &mdash; SOLD</div>
+            <div class="slot s-small sold">Std</div>
+            <div class="slot s-small sold">Std</div>
+            <div class="slot s-small sold">Std</div>
+            <div class="slot s-large open">Showcase &mdash; open</div>
+            <div class="slot s-medium open">Premium &mdash; open</div>
+            <div class="slot s-medium open">Premium &mdash; open</div>
+            <div class="slot s-small open">Std</div>
+            <div class="slot s-small open">Std</div>
+            <div class="slot s-small open">Std</div>
+            <div class="slot s-small open">Std</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE + EARNINGS -->
+      <div class="two-col">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Lead pipeline</div>
+            <div class="card-meta">8 leads tracked</div>
+          </div>
+          <div class="pipeline-list">
+            <div class="pipe-item">
+              <div class="pipe-biz">Tony's Pizza Express</div>
+              <div class="pipe-size">Showcase</div>
+              <div class="tag tag-pitched">Pitched</div>
+            </div>
+            <div class="pipe-item">
+              <div class="pipe-biz">Green Thumb Landscaping</div>
+              <div class="pipe-size">Premium</div>
+              <div class="tag tag-sold">Sold</div>
+            </div>
+            <div class="pipe-item">
+              <div class="pipe-biz">Sunrise Yoga Studio</div>
+              <div class="pipe-size">Standard</div>
+              <div class="tag tag-reach">Reach out</div>
+            </div>
+            <div class="pipe-item">
+              <div class="pipe-biz">Desert Bloom Florist</div>
+              <div class="pipe-size">Premium</div>
+              <div class="tag tag-pass">Passed</div>
+            </div>
+            <div class="pipe-item">
+              <div class="pipe-biz">Mesa Auto Detail</div>
+              <div class="pipe-size">Standard</div>
+              <div class="tag tag-reach">Reach out</div>
+            </div>
+            <div class="pipe-item">
+              <div class="pipe-biz">Canyon Coffee Roasters</div>
+              <div class="pipe-size">Showcase</div>
+              <div class="tag tag-pitched">Pitched</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Monthly earnings</div>
+            <div class="card-meta">Last 5 months</div>
+          </div>
+          <div class="bar-chart">
+            <div class="bar-col">
+              <div class="bar-amt">$980</div>
+              <div class="bar-body" style="height: 42%"></div>
+              <div class="bar-mo">Oct</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-amt">$1,540</div>
+              <div class="bar-body" style="height: 66%"></div>
+              <div class="bar-mo">Nov</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-amt">$2,180</div>
+              <div class="bar-body" style="height: 94%"></div>
+              <div class="bar-mo">Dec</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-amt">$1,760</div>
+              <div class="bar-body" style="height: 76%"></div>
+              <div class="bar-mo">Jan</div>
+            </div>
+            <div class="bar-col">
+              <div class="bar-amt">$1,320</div>
+              <div class="bar-body active" style="height: 57%"></div>
+              <div class="bar-mo">Feb &#9654;</div>
+            </div>
+          </div>
+
+          <div class="hist-row">
+            <span class="hist-month">December</span>
+            <div class="hist-right">
+              <div class="hist-badge win">Full card</div>
+              <span class="hist-amt">$2,180</span>
+            </div>
+          </div>
+          <div class="hist-row">
+            <span class="hist-month">January</span>
+            <div class="hist-right">
+              <div class="hist-badge win">Full card</div>
+              <span class="hist-amt">$1,760</span>
+            </div>
+          </div>
+          <div class="hist-row">
+            <span class="hist-month">November</span>
+            <div class="hist-right">
+              <div class="hist-badge miss">No bonus</div>
+              <span class="hist-amt muted">$1,540</span>
+            </div>
+          </div>
+
+          <div class="all-time">
+            <span class="all-time-label">All-time earnings</span>
+            <span class="all-time-val">$7,780</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- STREAK + PLAYBOOK -->
+      <div class="three-col">
+        <div class="card" style="text-align: center">
+          <div class="card-header" style="justify-content: center">
+            <div class="card-title">Completion streak</div>
+          </div>
+          <div class="streak-block">
+            <div class="streak-num">2</div>
+            <div class="streak-label">consecutive full cards</div>
+          </div>
+          <div class="streak-dots" style="margin-top: 16px">
+            <div class="streak-dot"></div>
+            <div class="streak-dot"></div>
+            <div class="streak-dot"></div>
+            <div class="streak-dot on"></div>
+            <div class="streak-dot on"></div>
+          </div>
+          <div
+            style="font-size: 0.7rem; color: var(--text-muted); margin-top: 8px"
+          >
+            Oct &rarr; Feb
+          </div>
+          <div
+            style="
+              margin-top: 16px;
+              padding-top: 14px;
+              border-top: 1px solid var(--border);
+              display: flex;
+              justify-content: space-between;
+            "
+          >
+            <div style="text-align: center">
+              <div
+                style="
+                  font-size: 1rem;
+                  font-weight: 800;
+                  color: var(--green-mid);
+                "
+              >
+                $2,180
+              </div>
+              <div
+                style="
+                  font-size: 0.68rem;
+                  color: var(--text-muted);
+                  margin-top: 2px;
+                "
+              >
+                Best month
+              </div>
+            </div>
+            <div style="text-align: center">
+              <div
+                style="font-size: 1rem; font-weight: 800; color: var(--text)"
+              >
+                5
+              </div>
+              <div
+                style="
+                  font-size: 0.68rem;
+                  color: var(--text-muted);
+                  margin-top: 2px;
+                "
+              >
+                Months active
+              </div>
+            </div>
+            <div style="text-align: center">
+              <div
+                style="font-size: 1rem; font-weight: 800; color: var(--text)"
+              >
+                3
+              </div>
+              <div
+                style="
+                  font-size: 0.68rem;
+                  color: var(--text-muted);
+                  margin-top: 2px;
+                "
+              >
+                Full cards
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column: span 2">
+          <div class="card-header">
+            <div class="card-title">Sales playbook</div>
+            <div class="card-meta">Resources &amp; scripts</div>
+          </div>
+          <div class="playbook-list">
+            <div class="playbook-item">
+              <div class="playbook-icon">&#128221;</div>
+              <div>
+                <div class="playbook-title">Cold outreach scripts</div>
+                <div class="playbook-sub">
+                  Phone, walk-in, and email templates
+                </div>
+              </div>
+              <div class="playbook-arrow">&#8599;</div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-icon">&#128172;</div>
+              <div>
+                <div class="playbook-title">Objection handling guide</div>
+                <div class="playbook-sub">
+                  The 10 most common pushbacks and how to respond
+                </div>
+              </div>
+              <div class="playbook-arrow">&#8599;</div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-icon">&#128200;</div>
+              <div>
+                <div class="playbook-title">
+                  Ad pricing &amp; commission sheet
+                </div>
+                <div class="playbook-sub">
+                  Quick reference for every ad size and what you earn
+                </div>
+              </div>
+              <div class="playbook-arrow">&#8599;</div>
+            </div>
+            <div class="playbook-item">
+              <div class="playbook-icon">&#127775;</div>
+              <div>
+                <div class="playbook-title">First-timer discount guide</div>
+                <div class="playbook-sub">
+                  When and how to use the introductory discount
+                </div>
+              </div>
+              <div class="playbook-arrow">&#8599;</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-logo"><span>Letterbox</span>Collective</div>
+        <div class="footer-copy">
+          &copy; 2026 Letterbox Collective. All Rights Reserved.
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
